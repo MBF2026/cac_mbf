@@ -165,8 +165,7 @@ $('#lo').onclick=async()=>{if(SB)await SB.auth.signOut();location.reload()};
   if(!window.supabase||!C.url||/VOTRE/.test(C.url+C.key)){$('#st').textContent='Configuration manquante : renseignez le fichier config.js.';return}
   try{SB=supabase.createClient(C.url,C.key);let {data:{session}}=await SB.auth.getSession();if(!session){const r=await SB.auth.signInAnonymously();if(r.error)throw r.error;session=r.data.session}uid=session.user.id;
     if(session.user.email){const r=await SB.rpc('is_admin');ed=r.data===true}
-  }catch(x){$('#st').textContent='Connexion à la base impossible. Vérifiez config.js et la configuration Supabase.';return}
-  db=dbx;document.body.classList.toggle('ed',ed);
+}catch(x){console.error('Erreur Supabase :',x);$('#st').textContent='Connexion à la base impossible : '+(x&&x.message||x);return}  db=dbx;document.body.classList.toggle('ed',ed);
   if(wantAdmin&&!ed)$('#lg').style.display='block';
   renderEv();
   const tm=setTimeout(()=>{if(!got)$('#st').textContent='Données injoignables pour l’instant.'},10000);
